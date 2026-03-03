@@ -55,6 +55,8 @@ export class ServerRouter<L extends Locals> {
   ): void => {
     handlers = handlers.map(
       (handler) => async (request: ServerRequest<L>, defer: Deferer) => {
+        if (route.at(0) !== '/') route = '/' + route;
+
         const pattern = new URLPattern({ pathname: route });
         const match = pattern.exec(request.href)?.pathname.groups;
 
