@@ -31,7 +31,7 @@ export class ServerRouter<L extends Locals> {
    */
   constructor(base = '', list?: Handler<L>[]) {
     this.handlers = list ?? [];
-    this.base = base;
+    this.base = base.at(0) === '/' ? base : '/' + base;
   }
 
   /**
@@ -53,9 +53,11 @@ export class ServerRouter<L extends Locals> {
     route: string,
     ...handlers: Handler<L>[]
   ): void => {
+    const normalised_route = route.at(0) === '/' ? route : '/' + route;
+
     handlers = handlers.map(
       (handler) => async (request: ServerRequest<L>, defer: Deferer) => {
-        const pattern = new URLPattern({ pathname: route });
+        const pattern = new URLPattern({ pathname: normalised_route });
         const match = pattern.exec(request.href)?.pathname.groups;
 
         const isPatternPassed = pattern.test(request.href);
@@ -67,7 +69,7 @@ export class ServerRouter<L extends Locals> {
         for (const key in match) params.set(key, match[key]);
 
         request.params = params;
-        request.route = `${this.base}${route}`;
+        request.route = `${this.base}${normalised_route}`;
 
         await handler(request, defer);
         return true;

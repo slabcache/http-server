@@ -1,4 +1,5 @@
-import { extension, ServerResponse } from '../../mod.ts';
+import type { ServerResponse } from '../event.ts';
+import { extension } from './extension.ts';
 
 /**
  * Fetches a file and returns it as a `respond` compatible response.

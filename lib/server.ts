@@ -24,7 +24,7 @@ type ServerOptions = {
  * A server class that's used to listen to incoming requests.
  */
 export class Server<L extends Locals = Locals> extends ServerRouter<L> {
-  private signal?: AbortSignal;
+  private controller?: AbortController;
 
   constructor() {
     super('', []);
@@ -48,10 +48,14 @@ export class Server<L extends Locals = Locals> extends ServerRouter<L> {
    * ```
    */
   listen = (options: ServerOptions): void => {
-    this.signal = new AbortController().signal;
+    this.controller = new AbortController();
+    const signal = options.signal
+      ? AbortSignal.any([options.signal, this.controller.signal])
+      : this.controller.signal;
 
     Deno.serve({
       ...options,
+      signal,
       handler: async (raw, { remoteAddr: addr }) => {
         let respond: (response: Response) => void;
         const response = new Promise((resolve) => respond = resolve);
@@ -79,7 +83,7 @@ export class Server<L extends Locals = Locals> extends ServerRouter<L> {
    * Closes server listener.
    */
   close = (): void => {
-    this.signal?.dispatchEvent(new Event('abort'));
+    this.controller?.abort();
   };
 
   /**
