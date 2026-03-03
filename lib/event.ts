@@ -1,7 +1,7 @@
 type ServerResponseBody =
   | null
   | string
-  | ArrayBuffer
+  | BufferSource
   | FormData
   | ReadableStream<Uint8Array>;
 
