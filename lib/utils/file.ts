@@ -1,4 +1,4 @@
-import { ServerResponse } from '../event.ts';
+import type { ServerResponse } from '../event.ts';
 import { extension } from './extension.ts';
 
 /**
