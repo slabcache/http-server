@@ -31,7 +31,7 @@ export class ServerRouter<L extends Locals> {
    */
   constructor(base = '', list?: Handler<L>[]) {
     this.handlers = list ?? [];
-    this.base = base.at(0) === '/' ? base : '/' + base;
+    this.base = base.at(0) === '/' || base.length === 0 ? base : '/' + base;
   }
 
   /**
