@@ -57,7 +57,7 @@ export class ServerRouter<L extends Locals> {
 
     handlers = handlers.map(
       (handler) => async (request: ServerRequest<L>, defer: Deferer) => {
-        const pattern = new URLPattern({ pathname: normalised_route });
+        const pattern = new URLPattern({ pathname: `${this.base}${normalised_route}` });
         const match = pattern.exec(request.href)?.pathname.groups;
 
         const isPatternPassed = pattern.test(request.href);
